@@ -5,67 +5,22 @@
 #                                                     +:+ +:+         +:+      #
 #    By: vgroux <vgroux@student.42lausanne.ch>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/01/22 15:33:01 by vgroux            #+#    #+#              #
-#    Updated: 2024/01/22 15:33:04 by vgroux           ###   ########.fr        #
+#    Created: 2024/01/24 13:08:50 by vgroux            #+#    #+#              #
+#    Updated: 2024/01/24 16:26:08 by vgroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-GREENGREEN = \033[38;5;46m
-RED = \033[0;31m
-GREY = \033[38;5;240m
-RESET = \033[0m
+all:
+	docker-compose -f ./srcs/docker-compose.yml up -d --build
 
-NAME =     webserv
+down:
+	docker-compose -f ./srcs/docker-compose.yml down
 
-CC =         c++
-CFLAGS =     -Wall -Wextra -Werror -std=c++98 -pedantic
-RM =         rm -rf
-
-DIR_H = headers/
-DIR_S =	srcs/
-DIR_O =	objs/
-
-SRCS_LIST =	utils.cpp \
-			Client.cpp Socket.cpp ServerConfig.cpp Route.cpp \
-			HttpRequest.class.cpp HttpRespond.class.cpp Boundary.class.cpp \
-			RequestHandler.class.cpp GetRequestHandler.class.cpp PostRequestHandler.class.cpp DeleteRequestHandler.class.cpp \
-			CgiExecutor.cpp \
-			main.cpp 
-
-
-SRCS =		${addprefix ${DIR_S}, ${SRCS_LIST}}
-
-OBJS =		${SRCS:${DIR_S}%.cpp=${DIR_O}%.o}
-
-${NAME}: ${OBJS}
-	@echo "$(RESET)[$(GREENGREEN)${NAME}$(RESET)]: ${NAME} Objects were created${GREY}"
-	${CC} ${CFLAGS} ${OBJS} -o ${NAME}
-	@echo "$(RESET)[$(GREENGREEN)${NAME}$(RESET)]: ${NAME} created !"
-
-all: ${NAME}
-
-${DIR_O}%.o:${DIR_S}%.cpp
-	@printf "\033[38;5;240m"
-	@mkdir -p ${DIR_O}
-	${CC} ${CFLAGS} -I ${DIR_H} -o $@ -c $<
+re:
+	docker-compose -f ./srcs/docker-compose.yml up -d --build
 
 clean:
-	@echo "$(RED) ██████╗██╗     ███████╗ █████╗ ███╗   ██╗██╗███╗   ██╗ ██████╗$(RESET)"
-	@echo "$(RED) ██╔════╝██║     ██╔════╝██╔══██╗████╗  ██║██║████╗  ██║██╔════╝$(RESET)"
-	@echo "$(RED) ██║     ██║     █████╗  ███████║██╔██╗ ██║██║██╔██╗ ██║██║  ███╗$(RESET)"
-	@echo "$(RED) ██║     ██║     ██╔══╝  ██╔══██║██║╚██╗██║██║██║╚██╗██║██║   ██║$(RESET)"
-	@echo "$(RED) ╚██████╗███████╗███████╗██║  ██║██║ ╚████║██║██║ ╚████║╚██████╔╝$(RESET)"
-	@echo "$(RED)  ╚═════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚═╝  ╚═══╝ ╚═════╝ $(RESET)"
-	@echo "[$(RED)${NAME}$(RESET)]: Cleaning ${NAME} Objects...${GREY}"
-	${RM} ${OBJS}
-	${RM} ${DIR_O}
-	@echo "[$(RED)${NAME}$(RESET)]: ${NAME} Objects were cleaned${GREY}"
-
-fclean: clean
-	@echo "${RESET}[$(RED)${NAME}$(RESET)]: Cleaning...${GREY}"
-	${RM} ${NAME}
-	@echo "${RESET}[$(RED)${NAME}$(RESET)]: Executable was cleaned"
-
-re: fclean all
-
-.PHONY: all clean fclean re 
+	docker-compose -f ./srcs/docker-compose.yml down -v; \
+	docker rmi -f $$(docker image ls -qa);
+	
+.PHONY: all down re clean fclean
