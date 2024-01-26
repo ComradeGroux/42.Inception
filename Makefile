@@ -6,7 +6,7 @@
 #    By: vgroux <vgroux@student.42lausanne.ch>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/24 13:08:50 by vgroux            #+#    #+#              #
-#    Updated: 2024/01/25 13:21:23 by vgroux           ###   ########.fr        #
+#    Updated: 2024/01/26 14:28:07 by vgroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,11 +28,13 @@ look:
 	@echo ''
 	docker network ls
 	
-re:
+re: clean
 	docker-compose -f ./srcs/docker-compose.yml up -d --build
 
-clean:
-	docker-compose -f ./srcs/docker-compose.yml down -v; \
+clean: down
+	docker-compose -f ./srcs/docker-compose.yml down -v;
+	docker volume rm -f $$(docker volume ls);
 	docker rmi -f $$(docker image ls -qa);
+	docker rm -f $$(docker ps -qa);
 	
 .PHONY: all down re clean fclean
