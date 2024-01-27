@@ -1,6 +1,36 @@
 version: '3'
 
 services:
+  mariadb:
+    container_name: mariadb
+    image: mariadb
+    volumes:
+      - WP_DB:/home/vgroux/data/mysql
+    networks:
+      - inception
+    restart: on-failure
+    env_file:
+      - ./.env
+    build: 
+      context: requirements/mariadb
+      dockerfile: Dockerfile
+
+  wordpress:
+    container_name: wordpress
+    image: wordpress
+    volumes:
+      - WP_Files:/home/vgroux/data/wordpress
+    networks:
+      - inception
+    restart: on-failure
+    env_file:
+      - ./.env
+    depends_on:
+      - mariadb
+    build: 
+      context: requirements/wordpress
+      dockerfile: Dockerfile
+
   nginx:
     container_name: nginx
     image: nginx
@@ -18,36 +48,6 @@ services:
     build:
       context: requirements/nginx
       dockerfile: Dockerfile
-
-  wordpress:
-    container_name: wordpress
-    image: wordpress
-    volumes:
-      - WP_Files:/home/vgroux/data/wordpress
-    networks:
-      - inception
-    restart: on-failure
-    env_file:
-      - ./.env
-    # depends_on:
-    #   - mariadb
-    build: 
-      context: requirements/wordpress
-      dockerfile: Dockerfile
-
-  # mariadb:
-  #   container_name: mariadb
-  #   image: mariadb
-  #   volumes:
-  #     - WP_DB:/home/vgroux/data/mysql
-  #   networks:
-  #     - inception
-  #   restart: on-failure
-  #   env_file:
-  #     - ./.env
-  #   build: 
-  #     context: requirements/mariadb
-  #     dockerfile: Dockerfile
 
 volumes:
   WP_Files:
