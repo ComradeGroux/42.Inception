@@ -9,11 +9,18 @@ services:
     networks:
       - inception
     restart: on-failure
+    ports:
+      - 3306:3306
     env_file:
       - ./.env
     build: 
       context: requirements/mariadb
       dockerfile: Dockerfile
+    healthcheck:
+        test: mysqladmin ping --silent
+        interval: 10s
+        timeout: 5s
+        start_period: 10s
 
   wordpress:
     container_name: wordpress
@@ -23,10 +30,13 @@ services:
     networks:
       - inception
     restart: on-failure
+    ports:
+      - 9000:9000
     env_file:
       - ./.env
     depends_on:
-      - mariadb
+      mariadb:
+        condition: service_healthy
     build: 
       context: requirements/wordpress
       dockerfile: Dockerfile
@@ -52,6 +62,7 @@ services:
 volumes:
   WP_Files:
     external: false
+    driver: local
     driver_opts:
       type: none
       o: bind
@@ -59,6 +70,7 @@ volumes:
 
   WP_DB:
     external: false
+    driver: local
     driver_opts:
       type: none
       o: bind
