@@ -19,4 +19,4 @@ RUN chmod +x /etc/script.sh
 
 EXPOSE 3306
 
-ENTRYPOINT ["sh", "/etc/script.sh"]
+CMD ["sh", "/etc/script.sh"]
