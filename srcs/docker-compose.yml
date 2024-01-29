@@ -9,8 +9,8 @@ services:
     networks:
       - inception
     restart: on-failure
-    ports:
-      - 3306:3306
+    expose:
+      - "3306"
     env_file:
       - ./.env
     build: 
@@ -30,8 +30,8 @@ services:
     networks:
       - inception
     restart: on-failure
-    ports:
-      - 9000:9000
+    expose:
+      - "9000"
     env_file:
       - ./.env
     depends_on:
