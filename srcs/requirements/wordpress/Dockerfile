@@ -5,6 +5,7 @@ FROM debian:bullseye
 RUN	apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y wget
+RUN apt-get install -y php7.3
 RUN apt-get install -y php-fpm
 RUN apt-get install -y php-mysql
 RUN apt-get install -y mariadb-client
