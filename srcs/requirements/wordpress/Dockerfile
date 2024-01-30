@@ -17,6 +17,8 @@ RUN mv latest.tar.gz /var/www
 RUN cd /var/www && tar xfz latest.tar.gz && rm latest.tar.gz
 RUN chmod 755 /var/www/wordpress
 
+COPY ./conf/php.conf /etc/php/7.3/fpm/pool.d/www.conf
+
 RUN mkdir -p /run/php
 RUN chmod 755 /run/php
 
@@ -24,7 +26,6 @@ RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.ph
 RUN chmod +x wp-cli.phar
 RUN mv wp-cli.phar /usr/local/bin/wp
 
-COPY ./conf/php.conf /etc/php/7.3/fpm/pool.d/www.conf
 COPY ./tools/auto_config_wp.sh /etc/auto_config_wp.sh
 
 RUN chmod +x /etc/auto_config_wp.sh
