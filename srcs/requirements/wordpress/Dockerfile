@@ -15,6 +15,7 @@ RUN wget https://wordpress.org/latest.tar.gz -O latest.tar.gz
 RUN mkdir /var/www
 RUN chmod 777 /var/www
 RUN mv latest.tar.gz /var/www
+RUN mkdir -p /var/www/wordpress
 RUN cd /var/www && tar xfz latest.tar.gz && rm latest.tar.gz
 RUN chmod 755 /var/www/wordpress
 
@@ -32,6 +33,7 @@ COPY ./tools/auto_config_wp.sh /etc/auto_config_wp.sh
 RUN chmod +x /etc/auto_config_wp.sh
 
 EXPOSE 9000
+
 
 WORKDIR /var/www/wordpress
 RUN mv wp-config-sample.php wp-config.php

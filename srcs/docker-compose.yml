@@ -26,7 +26,7 @@ services:
     container_name: wordpress
     image: wordpress
     volumes:
-      - WP_Files:/home/vgroux/data/wordpress
+      - WP_Files:/var/www
     networks:
       - inception
     restart: on-failure
@@ -45,7 +45,7 @@ services:
     container_name: nginx
     image: nginx
     volumes:
-      - WP_Files:/home/vgroux/data/wordpress
+      - WP_Files:/var/www
     ports:
       - 443:443
     networks:
@@ -66,7 +66,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: '~/data/wordpress/'
+      device: '/home/vgroux/data/wordpress/'
 
   WP_DB:
     external: false
@@ -74,7 +74,7 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: '~/data/mysql'
+      device: '/home/vgroux/data/mysql'
 
 
 networks:

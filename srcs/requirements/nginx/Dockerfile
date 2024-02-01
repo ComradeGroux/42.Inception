@@ -21,6 +21,11 @@ RUN chown -R www-data:www-data /var/www/html
 RUN mkdir -p /run/nginx
 COPY ./conf/nginx.conf /etc/nginx/conf.d
 
+WORKDIR /var/www
+
+RUN mkdir -p /usr/share/nginx/logs
+RUN touch /usr/share/nginx/logs/error.log
+
 # Expose port
 EXPOSE 443
 
