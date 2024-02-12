@@ -26,7 +26,7 @@ services:
     container_name: wordpress
     image: wordpress
     volumes:
-      - WP_Files:/var/www
+      - WP_Files:/var/www/wordpress
     networks:
       - inception
     restart: on-failure
@@ -45,7 +45,7 @@ services:
     container_name: nginx
     image: nginx
     volumes:
-      - WP_Files:/var/www
+      - WP_Files:/var/www/wordpress
     ports:
       - 443:443
     networks:

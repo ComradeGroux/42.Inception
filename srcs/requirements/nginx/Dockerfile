@@ -2,8 +2,8 @@
 FROM debian:bullseye
 
 # Install all the program
-RUN	apt-get update
-RUN apt-get upgrade
+RUN	apt-get update -y
+RUN apt-get upgrade -y
 RUN apt-get install apt-utils
 RUN apt-get install -y nginx
 RUN apt-get install -y openssl
