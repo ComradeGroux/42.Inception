@@ -5,9 +5,13 @@ FROM debian:bullseye
 RUN	apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install apt-utils
+RUN apt-get install -y vim
 RUN apt-get install -y nginx
 RUN apt-get install -y openssl
 
+RUN mkdir -p /etc/ssl/
+RUN mkdir -p /etc/ssl/certs/
+RUN mkdir -p /etc/ssl/private/
 # Create certif + key SSL
 RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
 	-out /etc/ssl/certs/vgroux.crt \

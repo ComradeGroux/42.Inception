@@ -5,14 +5,14 @@ FROM debian:bullseye
 RUN	apt-get update -y
 RUN apt-get upgrade -y
 RUN apt-get install -y wget
-RUN apt-get install -y php7.3
+RUN apt-get install -y php7.4
 RUN apt-get install -y php-fpm
 RUN apt-get install -y php-mysql
 RUN apt-get install -y mariadb-client
 
 # Install Wordpress
 RUN wget https://wordpress.org/latest.tar.gz -O latest.tar.gz
-RUN mkdir /var/www
+RUN mkdir -p /var/www
 RUN chmod 777 /var/www
 RUN mv latest.tar.gz /var/www
 RUN mkdir -p /var/www/wordpress
