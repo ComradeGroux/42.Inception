@@ -1,82 +1,70 @@
-version: '3'
+version : '3'
 
 services:
-  mariadb:
-    container_name: mariadb
-    image: mariadb
-    volumes:
-      - WP_DB:/home/vgroux/data/mysql
-    networks:
+    mariadb:
+      image: mariadb
+      container_name: mariadb
+      networks:
       - inception
-    restart: on-failure
-    expose:
+      build:
+        context: requirements/mariadb
+        dockerfile: Dockerfile
+      env_file: 
+        - .env
+      volumes:
+        - mariadb:/var/lib/mysql
+      restart: on-failure
+      expose:
       - "3306"
-    env_file:
-      - ./.env
-    build: 
-      context: requirements/mariadb
-      dockerfile: Dockerfile
-    healthcheck:
-        test: mysqladmin ping --silent
-        interval: 10s
-        timeout: 5s
-        start_period: 10s
 
-  wordpress:
-    container_name: wordpress
-    image: wordpress
-    volumes:
-      - WP_Files:/var/www/wordpress
-    networks:
+    nginx:
+      image: nginx
+      container_name: nginx
+      volumes: 
+        - wordpress:/var/www/wordpress
+      networks:
       - inception
-    restart: on-failure
-    expose:
-      - "9000"
-    env_file:
-      - ./.env
-    depends_on:
-      mariadb:
-        condition: service_healthy
-    build: 
-      context: requirements/wordpress
-      dockerfile: Dockerfile
-
-  nginx:
-    container_name: nginx
-    image: nginx
-    volumes:
-      - WP_Files:/var/www/wordpress
-    ports:
+      depends_on:
+      - wordpress
+      build:
+        context: requirements/nginx
+        dockerfile: Dockerfile
+      env_file: 
+        - .env
+      ports:
       - "443:443"
-    networks:
+      restart: on-failure
+    
+    wordpress:
+      image: wordpress
+      container_name: wordpress
+      env_file: 
+      - .env
+      volumes:
+        - wordpress:/var/www/wordpress
+      networks:
       - inception
-    restart: on-failure
-    env_file:
-      - ./.env
-    depends_on:
-     - wordpress
-    build:
-      context: requirements/nginx
-      dockerfile: Dockerfile
-
-volumes:
-  WP_Files:
-    external: false
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: '/home/vgroux/data/wordpress/'
-
-  WP_DB:
-    external: false
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: '/home/vgroux/data/mysql'
-
+      build:
+        context: requirements/wordpress
+        dockerfile: Dockerfile
+      depends_on:
+      - mariadb
+      restart: on-failure
+      expose:
+      - "9000"
 
 networks:
   inception:
     driver: bridge
+
+volumes:
+  wordpress:
+    driver_opts:
+      type: none
+      o: bind
+      device: '/home/vgroux/data/wordpress/'
+  mariadb:
+    driver_opts:
+      type: none
+      o: bind
+      device: '/home/vgroux/data/mariadb/'

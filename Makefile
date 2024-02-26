@@ -5,19 +5,22 @@
 #                                                     +:+ +:+         +:+      #
 #    By: vgroux <vgroux@student.42lausanne.ch>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2024/01/24 13:08:50 by vgroux            #+#    #+#              #
-#    Updated: 2024/01/30 17:15:31 by vgroux           ###   ########.fr        #
+#    Created: 2024/02/16 14:12:05 by vgroux            #+#    #+#              #
+#    Updated: 2024/02/26 13:46:32 by vgroux           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-all:
-	docker-compose -f ./srcs/docker-compose.yml up -d --build
+DOCKER = docker-compose -f ./srcs/docker-compose.yml
+DATA_FOLDER = /home/vgroux/data
 
-down:
-	docker-compose -f ./srcs/docker-compose.yml down
+all:
+	clear
+	mkdir -p /home/vgroux/data/mariadb
+	mkdir -p /home/vgroux/data/wordpress
+	$(DOCKER) up -d --build
 
 debug: all
-	docker-compose -f ./srcs/docker-compose.yml logs -f
+	${DOCKER} logs -f
 
 look:
 	docker ps -a
@@ -29,16 +32,18 @@ look:
 	docker network ls
 
 clean:
+	clear
 	docker image prune -a
-	docker-compose -f ./srcs/docker-compose.yml down
+	$(DOCKER) down
 
 fclean: clean
 	docker system prune -a --volumes
+	docker volume rm srcs_mariadb
+	docker volume rm srcs_wordpress
+	rm -rf ~/data/mariadb
+	rm -rf ~/data/wordpress
 
-vol:
-	docker volume rm $$(docker volume ls)
 
-re: fclean
-	docker-compose -f ./srcs/docker-compose.yml up -d --build
-	
-.PHONY: all down re clean fclean vol debug look
+re : fclean all
+
+.PHONY: all re fclean debug clean look

@@ -1,37 +1,24 @@
-# Base docker image
 FROM debian:bullseye
 
-# Install all the program
-RUN	apt-get update -y
+RUN apt-get update -y
 RUN apt-get upgrade -y
-RUN apt-get install apt-utils
-RUN apt-get install -y vim
-RUN apt-get install -y nginx
-RUN apt-get install -y openssl
+RUN apt-get install vim -y
 
-RUN mkdir -p /etc/ssl/
-RUN mkdir -p /etc/ssl/certs/
-RUN mkdir -p /etc/ssl/private/
-# Create certif + key SSL
-RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 \
-	-out /etc/ssl/certs/vgroux.crt \
-	-keyout /etc/ssl/private/vgroux.key \
-	-subj "/C=CH/ST=Lausanne/L=Lausanne/O=42 School/OU=vgroux/CN=vgroux/";
+RUN apt-get install nginx -y
 
-# Nginx config
-RUN mkdir -p /var/www/html/
-RUN chmod 775 /var/www/html
+RUN apt-get install openssl -y
+
+RUN mkdir -p /etc/nginx/ssl
+
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:4096 -keyout /etc/ssl/private/vgroux.key -out /etc/ssl/certs/vgroux.crt -subj "/C=CH/ST=Lausanne/L=Lausanne/O=42 School/OU=vgroux/CN=vgroux.42.fr/";
+
+RUN chmod 755 /var/www/html
+RUN mkdir -p /var/www/html && chmod 755 /var/www/html
 RUN chown -R www-data:www-data /var/www/html
-RUN mkdir -p /run/nginx
-COPY ./conf/nginx.conf /etc/nginx/conf.d
 
-WORKDIR /var/www
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 
-RUN mkdir -p /usr/share/nginx/logs
-RUN touch /usr/share/nginx/logs/error.log
 
-# Expose port
 EXPOSE 443
 
-# Entrypoint
-CMD [ "nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
