@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 10
+sleep 5
 
 if ! wp core is-installed --allow-root  ; then
     wp core download --allow-root --force
@@ -10,7 +10,7 @@ if ! wp core is-installed --allow-root  ; then
     wp core install --url="vgroux.42.fr" --title="Inception" \
     --admin_user=$MYSQL_ROOT_USER --admin_password=$MYSQL_ROOT_PASSWORD \
     --admin_email=$MYSQL_MAIL --allow-root
-    wp user create $MYSQL_USER --user_pass=$MYSQL_PASSWORD --allow-root
+    wp user create $WP_USER $WP_MAIL --user_pass=$WP_PASSWORD --allow-root
     wp config shuffle-salts --allow-root
     echo "Wordpress's installation complete"
 fi

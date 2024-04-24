@@ -3,6 +3,9 @@
 # print command
 set -x
 
+chmod 777 /var/lib/mysql
+chmod 777 /var/lib/mysql/*
+
 touch file
 chmod 777 file
 
