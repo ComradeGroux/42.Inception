@@ -23,7 +23,6 @@ RUN		chmod +x wp-cli.phar
 RUN		mv wp-cli.phar /usr/local/bin/wp
 
 COPY	./script/auto_config.sh /etc/auto_config.sh
-COPY	./script/article.txt /tmp/article.txt
 
 RUN		chmod +x /etc/auto_config.sh
 
